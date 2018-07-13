@@ -195,6 +195,7 @@ static CGFloat keyboardHeight = 0.0;
 }
 
 - (void)showOrHiddenAnimation:(BOOL)show {
+    //0.25f是从键盘的弹出动画的duration获取的，也可以通过获取keyboard里的信息来动态设置这个时间
     [UIView animateWithDuration:0.25f animations:^{
         CGRect frame = self.frame;
         if (show) {
