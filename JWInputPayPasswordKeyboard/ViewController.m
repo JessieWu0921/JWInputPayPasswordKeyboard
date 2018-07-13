@@ -21,22 +21,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-//    [self layoutUI];
 }
 
 
 #pragma mark - methods
-- (void)layoutUI {
-    UIView *view1 = [[UIView alloc] init];
-    [self.view addSubview:view1];
-    
-    [view1 mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.left.right.equalTo(self.view);
-        make.bottom.equalTo(self.view).mas_offset(200);
-        make.height.mas_equalTo(300);
-    }];
-    [view1 setBackgroundColor:[UIColor redColor]];
-}
 
 #pragma mark - actions & events
 - (IBAction)clickedBtn:(id)sender {
