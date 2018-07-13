@@ -40,7 +40,9 @@
 
 #pragma mark - actions & events
 - (IBAction)clickedBtn:(id)sender {
-    [JWInputPasswordView showInputPasswordKeyboard:self.view completion:^(NSString *password) {
+    [JWInputPasswordView showInputPasswordKeyboard:self.view forget:^{
+        NSLog(@"i forget my password.");
+    } completion:^(NSString *password) {
         NSLog(@"pay password is: %@", password);
     } cancel:^{
         NSLog(@"input have been canceled.");

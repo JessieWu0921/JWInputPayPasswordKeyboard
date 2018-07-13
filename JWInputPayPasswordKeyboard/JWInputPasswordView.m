@@ -27,6 +27,7 @@ static CGFloat keyboardHeight = 0.0;
 @property (nonatomic, copy) NSArray *textFields;
 @property (nonatomic, copy) completionBlock completionBlock;
 @property (nonatomic, copy) cancelBlock cancelBlock;
+@property (nonatomic, copy) forgetPasswordBlock forgetPasswordBlock;
 @property (nonatomic, strong) UIView *showInView;
 @property (nonatomic, strong) UITextField *hiddenTextField;
 
@@ -69,7 +70,7 @@ static CGFloat keyboardHeight = 0.0;
         make.height.equalTo(@(TextFieldContainerHeight));
     }];
     [containerView setBackgroundColor:[UIColor whiteColor]];
-    //toolbar
+    //布局toolbar
     UIView *toolBar = [[UIView alloc] init];
     [containerView addSubview:toolBar];
     [toolBar mas_makeConstraints:^(MASConstraintMaker *make) {
@@ -99,7 +100,7 @@ static CGFloat keyboardHeight = 0.0;
     [forgetPasswordBtn.titleLabel setFont:[UIFont systemFontOfSize:16.0f]];
     [forgetPasswordBtn setTitleColor:[UIColor blueColor] forState:UIControlStateNormal];
     [forgetPasswordBtn setTitleColor:[UIColor grayColor] forState:UIControlStateHighlighted];
-//    [forgetPasswordBtn addTarget:self action:@selector(forgetPassword:) forControlEvents:UIControlEventTouchUpInside];
+    [forgetPasswordBtn addTarget:self action:@selector(forgetPassword:) forControlEvents:UIControlEventTouchUpInside];
     //布局textfield
     [self layoutTextfield:containerView];
 }
@@ -177,16 +178,6 @@ static CGFloat keyboardHeight = 0.0;
     [lineView setBackgroundColor:[UIColor lightGrayColor]];
 }
 
-- (void)addKeyboardNotification {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showKeyboard:) name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideKeyboard:) name:UIKeyboardWillHideNotification object:nil];
-}
-
-- (void)removeNotification {
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
-}
-
 - (void)textFieldConfig:(UITextField *)textField {
     textField.secureTextEntry = YES;
     textField.userInteractionEnabled = NO;
@@ -225,15 +216,29 @@ static CGFloat keyboardHeight = 0.0;
     [self showOrHiddenAnimation:NO];
 }
 
+#pragma mark - notification
+- (void)addKeyboardNotification {
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(showKeyboard:) name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(hideKeyboard:) name:UIKeyboardWillHideNotification object:nil];
+}
+
+- (void)removeNotification {
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
+    [[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
+}
+
 #pragma mark - public method
-+ (void)showInputPasswordKeyboard:(id)view completion:(completionBlock)block cancel:(cancelBlock)cancel {
++ (void)showInputPasswordKeyboard:(id)view forget:(forgetPasswordBlock)forget completion:(completionBlock)completion cancel:(cancelBlock)cancel {
     JWInputPasswordView *inputView = [[JWInputPasswordView alloc] initWithFrame:CGRectMake(0, ((UIView *)view).frame.size.height, ((UIView *)view).frame.size.width, TextFieldContainerHeight + keyboardHeight)];
     inputView.showInView = view;
     [inputView.showInView addSubview:inputView];
+    
+    inputView.forgetPasswordBlock = forget;
+    inputView.completionBlock = completion;
+    inputView.cancelBlock = cancel;
+    
     //动画
     [inputView showOrHiddenAnimation:YES];
-    inputView.completionBlock = block;
-    inputView.cancelBlock = cancel;
 }
 
 + (void)dismissFromView:(UIView *)view {
@@ -281,6 +286,12 @@ static CGFloat keyboardHeight = 0.0;
 
 - (void)hideKeyboard:(NSNotification *)notification {
     //键盘消失
+}
+
+- (void)forgetPassword:(id)sender {
+    if (self.forgetPasswordBlock) {
+        self.forgetPasswordBlock();
+    }
 }
 
 - (void)cancel:(id)sender {

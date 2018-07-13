@@ -10,10 +10,11 @@
 
 typedef void(^completionBlock)(NSString *password);
 typedef void(^cancelBlock)(void);
+typedef void(^forgetPasswordBlock)(void);
 
 @interface JWInputPasswordView : UIView
 
-+ (void)showInputPasswordKeyboard:(id)view completion:(completionBlock)block cancel:(cancelBlock)cancel;
++ (void)showInputPasswordKeyboard:(id)view forget:(forgetPasswordBlock)forget completion:(completionBlock)completion cancel:(cancelBlock)cancel;
 + (void)dismissFromView:(UIView *)view;
 
 @end
