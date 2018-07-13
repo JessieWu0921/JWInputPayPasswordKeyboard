@@ -230,6 +230,13 @@ static CGFloat keyboardHeight = 0.0;
 
 #pragma mark - public method
 + (void)showInputPasswordKeyboard:(id)view forget:(forgetPasswordBlock)forget completion:(completionBlock)completion cancel:(cancelBlock)cancel {
+    UIView *parentView = (UIView *)view;
+    //检测是否已经弹出
+    for (UIView *subview in parentView.subviews) {
+        if ([subview isKindOfClass:[JWInputPasswordView class]]) {
+            return;
+        }
+    }
     JWInputPasswordView *inputView = [[JWInputPasswordView alloc] initWithFrame:CGRectMake(0, ((UIView *)view).frame.size.height, ((UIView *)view).frame.size.width, TextFieldContainerHeight + keyboardHeight)];
     inputView.showInView = view;
     [inputView.showInView addSubview:inputView];
